@@ -17,6 +17,7 @@
 #       If this is not the case, you'll have to manually pull the repo 
 #       first on the runner.
 
+$nfRoot = $env:NF_ROOT
 $ncRoot = $env:NC_ROOT
 
 if ([System.String]::IsNullOrEmpty($ncRoot) -or ![System.IO.Directory]::Exists($ncRoot))
@@ -105,7 +106,7 @@ try
 
     # Fetch the current branch and commit from git
 
-    Push-Location $env:NF_ROOT
+    Push-Location $nfRoot
 
         $branch = $(& git branch --show-current).Trim()
         ThrowOnExitCode
@@ -127,7 +128,7 @@ try
 
     # Fetch the current branch from git
 
-    Push-Location $env:NF_ROOT
+    Push-Location $nfRoot
 
         $branch = $(& git branch --show-current).Trim()
         ThrowOnExitCode
@@ -136,7 +137,7 @@ try
 
     # Retrieve the current neonKUBE version
 
-    $neonKUBE_Version = $(& "$NF_ROOT\ToolBin\neon-build" read-version "$NF_ROOT\Lib\Neon.Common\Build.cs" NeonKubeVersion)
+    $neonKUBE_Version = $(& "$nfRoot\ToolBin\neon-build" read-version "$nfRoot\Lib\Neon.Common\Build.cs" NeonKubeVersion)
     ThrowOnExitCode
 
     # Identify the target package registry organizations
@@ -161,7 +162,7 @@ try
 
     # Execute the build/publish script
 
-    $scriptPath = [System.IO.Path]::Combine($env:NF_ROOT, "Images", "publish.ps1")
+    $scriptPath = [System.IO.Path]::Combine($nfRoot, "Images", "publish.ps1")
 
     Write-ActionOutput "Building container images"
     pwsh -f $scriptPath $allOption $baseOption $otherOption $serviceOption $testOption $noPruneOption $noPushOption > $buildLog
