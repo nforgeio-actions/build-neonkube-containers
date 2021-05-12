@@ -167,15 +167,15 @@ try
     pwsh -f $scriptPath $allOption $baseOption $otherOption $serviceOption $testOption $noPruneOption $noPushOption > $buildLog
     ThrowOnExitCode
 
-    # Make all of the images public if we published them this was requested 
+    # Make all of the images public if we published them and this was requested 
 
-    if ($publish -ane $public)
+    if ($publish -and $public)
     {
         Write-ActionOutput "Making neonKUBE images public"
         Set-GitHub-Container-Visibility $neonkubeRegistry "*-$neonKUBE_Version"
 
         Write-ActionOutput "Making neonLIBRARY images public"
-        Set-GitHub-Container-Visibility $neonlibraryRegistry "*"
+        Set-GitHub-Container-Visibility $neonlibraryRegistry "*" [Neon.Deployment.GitHubPackageVisibility]::Public
     }
 }
 catch
