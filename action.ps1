@@ -34,9 +34,15 @@ try
 {
     # Read the inputs
 
-    $prune   = Get-ActionInputBool "prune"   $true
-    $publish = Get-ActionInputBool "publish" $true
-    $options = Get-ActionInput     "options" $true
+    # $prune    = Get-ActionInputBool "prune"     $true
+    # $publish  = Get-ActionInputBool "publish"   $true
+    # $options  = Get-ActionInput     "options"   $true
+    # $buildLog = Get-ActionInput     "build-log" $true
+
+ $prune    = $false
+ $publish  = $false
+ $options  = "all"
+ $buildLog = "C:\Temp\build.log"
 
     if ([System.String]::IsNullOrWhitespace($options))
     {
@@ -57,9 +63,9 @@ try
     $baseOption    = ""
     $otherOption   = ""
     $serviceOption = ""
-    $testOptions   = ""
-    $noPrune       = ""
-    $noPush        = ""
+    $testOption    = ""
+    $noPruneOption = ""
+    $noPushOption  = ""
 
     if ($all)
     {
@@ -88,23 +94,52 @@ try
 
     if (!$prune)
     {
-        $noPrune = "-noprune"
+        $noPruneOption = "-noprune"
     }
 
-    if (!$push)
+    if (!$publish)
     {
-        $noPush = "-nopush"
+        $noPushOption = "-nopush"
     }
+
+    # Set default outputs
+
+    Set-ActionOutput "success" "true"
+    Set-ActionOutput "build-log" $buildLog
+
+    # Fetch the current branch and commit from git
+
+    Push-Location $env:NF_ROOT
+
+        $branch = $(& git branch --show-current).Trim()
+        ThrowOnExitCode
+
+        $commit = $(& git rev-parse HEAD).Trim()
+        ThrowOnExitCode
+
+    Pop-Location
+
+    Set-ActionOutput "build-branch" $branch
+    Set-ActionOutput "build-commit" $commit
 
     # Execute the build/publish script
 
     $scriptPath = [System.IO.Path]::Combine($env:NF_ROOT, "Images", "publish.ps1")
 
-    pwsh -f $scriptPath $allOption $baseOption $otherOption $serviceOption $testOptions $noPrune $noPush
+    Write-ActionOutput "Building container images"
+    pwsh -f $scriptPath $allOption $baseOption $otherOption $serviceOption $testOption $noPruneOption $noPushOption > $buildLog
     ThrowOnExitCode
+
+    # Make all of the images public if we published
+
+    if ($publish)
+    {
+        Write-ActionOutput "Making container images public"
+        Set-GitHub-Container-Visibility registryOrg "*"
+    }
 }
 catch
 {
     Write-ActionException $_
-    exit 1
+    Set-ActionOutput "success" "false"
 }

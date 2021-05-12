@@ -28,6 +28,18 @@ inputs:
     description: "Specifies which containers to build (all, base, other, service, test)"
     required: false
     default: "all"
+  build-log:
+    description: "Specifies thee path where the build log should be written"
+    required: true
+outputs:
+  success:
+    description: "Returns as 'true' on success"
+  build-branch:
+    description: "Returns the the build branch"
+  build-commit:
+    description: "Returns the the build commit"
+  build-log: 
+    description: "Returns as the path to the build log"
 runs:
   using: node12
   main: action.js
