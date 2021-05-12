@@ -120,7 +120,7 @@ try
     Set-ActionOutput "build-branch"     $branch
     Set-ActionOutput "build-commit"     $commit
     Set-ActionOutput "build-commit-uri" "https://github.com/$env:GITHUB_REPOSITORY/commit/$buildCommit"
-    Set-ActionOutput "build-issue-uri"   ""
+    Set-ActionOutput "build-issue-uri"  ""
 
     # Execute the build/publish script
 
