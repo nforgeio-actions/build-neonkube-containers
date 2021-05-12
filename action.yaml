@@ -25,11 +25,11 @@ inputs:
     required: false
     default: "true"
   images:
-    description: "Specifies which containers to build (all, base, other, service, test)"
+    description: "Specifies which containers to build (all base other service test)"
     required: false
     default: "all"
   options: 
-    description: "Specifies options (prune, publish):"
+    description: "Specifies options (prune publish):"
     required: false
     default: "prune publish"
   build-log:
