@@ -24,12 +24,16 @@ inputs:
     description: "Publish containers"
     required: false
     default: "true"
-  options:
+  images:
     description: "Specifies which containers to build (all, base, other, service, test)"
     required: false
     default: "all"
+  options: 
+    description: "Specifies options (prune, publish):"
+    required: false
+    default: "prune publish"
   build-log:
-    description: "Specifies thee path where the build log should be written"
+    description: "Specifies the path where the build log should be written"
     required: true
 outputs:
   success:

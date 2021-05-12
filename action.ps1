@@ -34,28 +34,33 @@ try
 {
     # Read the inputs
 
-    # $prune    = Get-ActionInputBool "prune"     $true
-    # $publish  = Get-ActionInputBool "publish"   $true
-    # $options  = Get-ActionInput     "options"   $true
+    # $images   = Get-ActionInput     "images"    $true
+    # $options  = Get-ActionInput     "options"   $false
     # $buildLog = Get-ActionInput     "build-log" $true
 
  $prune    = $false
  $publish  = $false
- $options  = "all"
+ $images   = "all"
+ $options  = ""
  $buildLog = "C:\Temp\build.log"
 
-    if ([System.String]::IsNullOrWhitespace($options))
+    if ([System.String]::IsNullOrWhitespace($images))
     {
         throw "The [options] input is required."
     }
 
-    # Scan the [options] input to determine which containers we're building
+    # Scan the [options] input
 
-    $all     = $options.Contains("all")
-    $base    = $options.Contains("base")
-    $other   = $options.Contains("other")
-    $service = $options.Contains("service")
-    $test    = $options.Contains("test")
+    $prune   = $options.Contains("prune")
+    $publish = $options.Contains("publish")
+
+    # Scan the [images] input to determine which containers we're building
+
+    $all     = $images.Contains("all")
+    $base    = $images.Contains("base")
+    $other   = $images.Contains("other")
+    $service = $images.Contains("service")
+    $test    = $images.Contains("test")
 
     # Configure the [$/neonKUBE/Images/publish.ps1] script options
 
