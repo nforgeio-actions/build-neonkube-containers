@@ -30,19 +30,19 @@ Push-Location $ncPowershell
 . ./includes.ps1
 Pop-Location
 
+# Read the inputs
+
+$images   = Get-ActionInput "images"    $true
+$options  = Get-ActionInput "options"   $false
+$buildLog = Get-ActionInput "build-log" $true
+
+if ([System.String]::IsNullOrWhitespace($images))
+{
+    throw "The [options] input is required."
+}
+
 try
 {
-    # Read the inputs
-
-    $images   = Get-ActionInput "images"    $true
-    $options  = Get-ActionInput "options"   $false
-    $buildLog = Get-ActionInput "build-log" $true
-
-    if ([System.String]::IsNullOrWhitespace($images))
-    {
-        throw "The [options] input is required."
-    }
-
     # Scan the [options] input
 
     $prune   = $options.Contains("prune")
