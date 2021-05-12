@@ -34,9 +34,9 @@ try
 {
     # Read the inputs
 
-    $images   = Get-ActionInput     "images"    $true
-    $options  = Get-ActionInput     "options"   $false
-    $buildLog = Get-ActionInput     "build-log" $true
+    $images   = Get-ActionInput "images"    $true
+    $options  = Get-ActionInput "options"   $false
+    $buildLog = Get-ActionInput "build-log" $true
 
     if ([System.String]::IsNullOrWhitespace($images))
     {
@@ -129,7 +129,7 @@ try
     pwsh -f $scriptPath $allOption $baseOption $otherOption $serviceOption $testOption $noPruneOption $noPushOption > $buildLog
     ThrowOnExitCode
 
-    # Make all of the images public if we published
+    # Make all of the images public if we published them
 
     if ($publish)
     {
