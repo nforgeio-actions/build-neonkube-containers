@@ -44,6 +44,8 @@ outputs:
     description: "Returns the the build commit"
   build-log: 
     description: "Returns as the path to the build log"
+  build-issue-uri:
+    description: "Returns as the GitHub issue URI if an issue was created"
 runs:
   using: node12
   main: action.js

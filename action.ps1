@@ -101,11 +101,6 @@ try
         $noPushOption = "-nopush"
     }
 
-    # Set default outputs
-
-    Set-ActionOutput "success" "true"
-    Set-ActionOutput "build-log" $buildLog
-
     # Fetch the current branch and commit from git
 
     Push-Location $env:NF_ROOT
@@ -118,8 +113,14 @@ try
 
     Pop-Location
 
-    Set-ActionOutput "build-branch" $branch
-    Set-ActionOutput "build-commit" $commit
+    # Set default outputs
+
+    Set-ActionOutput "success"          "true"
+    Set-ActionOutput "build-log"        $buildLog
+    Set-ActionOutput "build-branch"     $branch
+    Set-ActionOutput "build-commit"     $commit
+    Set-ActionOutput "build-commit-uri" "https://github.com/$env:GITHUB_REPOSITORY/commit/$buildCommit"
+    Set-ActionOutput "build-issue-uri"   ""
 
     # Execute the build/publish script
 
