@@ -8,13 +8,26 @@
 # formal written and signed agreement with neonFORGE, LLC.
 
 #------------------------------------------------------------------------------
-# Clears the runner state including the GITHUB_WORKSPACE directory.
+# Builds and publishes neonKUBE container images.
 #
 # NOTE: You must run the [setup-node] action before this to ensure that
 #       Node.js is configured on the runner.
 
 name: clean
-description: "Clears the runner state including the GITHUB_WORKSPACE directory"
+description: "Builds and publishes neonKUBE container images"
+inputs:
+  prune:
+    description: "Prune all Docker assets"
+    required: false
+    default: "true"
+  publish: 
+    description: "Publish containers"
+    required: false
+    default: "true"
+  options:
+    description: "Specifies which containers to build (all, base, other, service, test)"
+    required: false
+    default: "all"
 runs:
   using: node12
   main: action.js

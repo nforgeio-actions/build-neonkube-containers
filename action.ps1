@@ -30,6 +30,81 @@ Push-Location $ncPowershell
 . ./includes.ps1
 Pop-Location
 
-# Clear the runner state.
+try
+{
+    # Read the inputs
 
-Clear-Directory $env:GITHUB_WORKSPACE
+    $prune   = Get-ActionInputBool "prune"   $true
+    $publish = Get-ActionInputBool "publish" $true
+    $options = Get-ActionInput     "options" $true
+
+    if ([System.String]::IsNullOrWhitespace($options))
+    {
+        throw "The [options] input is required."
+    }
+
+    # Scan the [options] input to determine which containers we're building
+
+    $all     = $options.Contains("all")
+    $base    = $options.Contains("base")
+    $other   = $options.Contains("other")
+    $service = $options.Contains("service")
+    $test    = $options.Contains("test")
+
+    # Configure the [$/neonKUBE/Images/publish.ps1] script options
+
+    $allOption     = ""
+    $baseOption    = ""
+    $otherOption   = ""
+    $serviceOption = ""
+    $testOptions   = ""
+    $noPrune       = ""
+    $noPush        = ""
+
+    if ($all)
+    {
+        $allOption = "-all"
+    }
+
+    if ($base)
+    {
+        $allOption = "-base"
+    }
+
+    if ($other)
+    {
+        $allOption = "-other"
+    }
+
+    if ($service)
+    {
+        $allOption = "-service"
+    }
+
+    if ($test)
+    {
+        $allOption = "-test"
+    }
+
+    if (!$prune)
+    {
+        $noPrune = "-noprune"
+    }
+
+    if (!$push)
+    {
+        $noPush = "-nopush"
+    }
+
+    # Execute the build/publish script
+
+    $scriptPath = [System.IO.Path]::Combine($env:NF_ROOT, "Images", "publish.ps1")
+
+    pwsh -f $scriptPath $allOption $baseOption $otherOption $serviceOption $testOptions $noPrune $noPush
+    ThrowOnExitCode
+}
+catch
+{
+    Write-ActionException $_
+    exit 1
+}
