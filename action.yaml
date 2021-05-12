@@ -29,9 +29,9 @@ inputs:
     required: false
     default: "all"
   options: 
-    description: "Specifies options (prune publish):"
+    description: "Specifies options (clean public prune publish):"
     required: false
-    default: "prune publish"
+    default: "clean public prune publish"
   build-log:
     description: "Specifies the path where the build log should be written"
     required: true

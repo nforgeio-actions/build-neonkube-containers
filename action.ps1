@@ -45,6 +45,8 @@ try
 {
     # Scan the [options] input
 
+    $clean   = $options.Contains("clean")
+    $public  = $options.Contains("public")
     $prune   = $options.Contains("prune")
     $publish = $options.Contains("publish")
 
@@ -123,6 +125,40 @@ try
     Set-ActionOutput "build-commit-uri" "https://github.com/$env:GITHUB_REPOSITORY/commit/$buildCommit"
     Set-ActionOutput "build-issue-uri"  ""
 
+    # Fetch the current branch from git
+
+    Push-Location $env:NF_ROOT
+
+        $branch = $(& git branch --show-current).Trim()
+        ThrowOnExitCode
+
+    Pop-Location
+
+    # Retrieve the current neonKUBE version
+
+    $neonKUBE_Version = $(& "$NF_ROOT\ToolBin\neon-build" read-version "$NF_ROOT\Lib\Neon.Common\Build.cs" NeonKubeVersion)
+    ThrowOnExitCode
+
+    # Identify the target package registry organizations
+
+    if ($branch.StartsWith("release-"))
+    {
+        $neonkubeRegistry    = "neonkube"
+        $neonlibraryRegistry = "neonrelease"
+    }
+    else
+    {
+        $neonkubeRegistry    = "neonkube-dev"
+        $neonlibraryRegistry = "neonrelease-dev"
+    }
+
+    # Delete all existing neonKUBE containers with the current neonKUBE Version
+
+    if ($clean)
+    {
+        Remove-GitHub-Container $neonkubeRegistry "*-$neonKUBE_Version"
+    }
+
     # Execute the build/publish script
 
     $scriptPath = [System.IO.Path]::Combine($env:NF_ROOT, "Images", "publish.ps1")
@@ -131,12 +167,15 @@ try
     pwsh -f $scriptPath $allOption $baseOption $otherOption $serviceOption $testOption $noPruneOption $noPushOption > $buildLog
     ThrowOnExitCode
 
-    # Make all of the images public if we published them
+    # Make all of the images public if we published them this was requested 
 
-    if ($publish)
+    if ($publish -ane $public)
     {
-        Write-ActionOutput "Making container images public"
-        Set-GitHub-Container-Visibility registryOrg "*"
+        Write-ActionOutput "Making neonKUBE images public"
+        Set-GitHub-Container-Visibility $neonkubeRegistry "*-$neonKUBE_Version"
+
+        Write-ActionOutput "Making neonLIBRARY images public"
+        Set-GitHub-Container-Visibility $neonlibraryRegistry "*"
     }
 }
 catch
