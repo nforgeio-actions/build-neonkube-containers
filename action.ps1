@@ -34,15 +34,9 @@ try
 {
     # Read the inputs
 
-    # $images   = Get-ActionInput     "images"    $true
-    # $options  = Get-ActionInput     "options"   $false
-    # $buildLog = Get-ActionInput     "build-log" $true
-
- $prune    = $false
- $publish  = $false
- $images   = "all"
- $options  = ""
- $buildLog = "C:\Temp\build.log"
+    $images   = Get-ActionInput     "images"    $true
+    $options  = Get-ActionInput     "options"   $false
+    $buildLog = Get-ActionInput     "build-log" $true
 
     if ([System.String]::IsNullOrWhitespace($images))
     {
