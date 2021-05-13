@@ -135,11 +135,6 @@ try
 
     Pop-Location
 
-    # Retrieve the current neonKUBE version
-
-    $neonKUBE_Version = $(& "$nfRoot\ToolBin\neon-build" read-version "$nfRoot\Lib\Neon.Common\Build.cs" NeonKubeVersion)
-    ThrowOnExitCode
-
     # Identify the target package registry organizations
 
     if ($branch.StartsWith("release-"))
@@ -153,11 +148,21 @@ try
         $neonlibraryRegistry = "neonrelease-dev"
     }
 
+    # Retrieve the current neonKUBE version
+
+    $neonKUBE_Version = $(& "$nfRoot\ToolBin\neon-build" read-version "$nfRoot\Lib\Neon.Common\Build.cs" NeonKubeVersion)
+    ThrowOnExitCode
+
     # Delete all existing neonKUBE containers with the current neonKUBE Version
+    
+    # NOTE: This means that it's not possible to work on multiple versions of 
+    #       neonKUBE at the same time.  I don't think this will impact is anytime
+    #       soon.  The fix would be to delete only images tagged with thye current
+    #       neonKUBE version.
 
     if ($clean)
     {
-        Remove-GitHub-Container $neonkubeRegistry "*-$neonKUBE_Version"
+        Remove-GitHub-Container $neonkubeRegistry "*"
     }
 
     # Execute the build/publish script
