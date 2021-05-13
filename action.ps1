@@ -33,9 +33,13 @@ Pop-Location
 
 # Read the inputs
 
-$images   = Get-ActionInput "images"    $true
-$options  = Get-ActionInput "options"   $false
-$buildLog = Get-ActionInput "build-log" $true
+# $images   = Get-ActionInput "images"    $true
+# $options  = Get-ActionInput "options"   $false
+# $buildLog = Get-ActionInput "build-log" $true
+
+$images   = "all"
+$options  = "clean public publish"
+$buildLog = "C:\Temp\build.log"
 
 if ([System.String]::IsNullOrWhitespace($images))
 {
@@ -160,9 +164,19 @@ try
     #       soon.  The fix would be to delete only images tagged with thye current
     #       neonKUBE version.
 
+    # $todo(jefflill):
+    #
+    # Container delete isn't working right now:
+    #
+    #   https://github.com/nforgeio/neonCLOUD/issues/149
+    #
+    # Remove this line when it does work:
+
+    $clean = false
+
     if ($clean)
     {
-        Remove-GitHub-Container $neonkubeRegistry "*" [Neon.Deployment.GitHubPackageType]::Container
+        Remove-GitHub-Container $neonkubeRegistry "*"
     }
 
     # Execute the build/publish script
@@ -170,18 +184,18 @@ try
     $scriptPath = [System.IO.Path]::Combine($nfRoot, "Images", "publish.ps1")
 
     Write-ActionOutput "Building container images"
-    pwsh -f $scriptPath $allOption $baseOption $otherOption $serviceOption $testOption $noPruneOption $noPushOption > $buildLog
+    pwsh -f $scriptPath $allOption $baseOption $otherOption $serviceOption $testOption $noPruneOption $noPushOption 2>&1 > $buildLog
     ThrowOnExitCode
 
-    # Make all of the images public if we published them and this was requested 
+    # Make all of the public images public when requested 
 
     if ($publish -and $public)
     {
         Write-ActionOutput "Making neonKUBE images public"
-        Set-GitHub-Container-Visibility $neonkubeRegistry "*-$neonKUBE_Version"
+        Set-GitHub-Container-Visibility $neonkubeRegistry "*" public
 
         Write-ActionOutput "Making neonLIBRARY images public"
-        Set-GitHub-Container-Visibility $neonlibraryRegistry "*" [Neon.Deployment.GitHubPackageVisibility]::Public
+        Set-GitHub-Container-Visibility $neonlibraryRegistry "*" public
     }
 }
 catch
