@@ -162,7 +162,7 @@ try
 
     if ($clean)
     {
-        Remove-GitHub-Container $neonkubeRegistry "*"
+        Remove-GitHub-Container $neonkubeRegistry "*" [Neon.Deployment.GitHubPackageType]::Container
     }
 
     # Execute the build/publish script
