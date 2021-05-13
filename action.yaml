@@ -16,14 +16,6 @@
 name: build-neonkube-containers
 description: "Builds and publishes neonKUBE container images"
 inputs:
-  prune:
-    description: "Prune all Docker assets"
-    required: false
-    default: "true"
-  publish: 
-    description: "Publish containers"
-    required: false
-    default: "true"
   images:
     description: "Specifies which containers to build (all base other service test)"
     required: false
