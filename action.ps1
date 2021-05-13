@@ -33,13 +33,9 @@ Pop-Location
 
 # Read the inputs
 
-# $images   = Get-ActionInput "images"    $true
-# $options  = Get-ActionInput "options"   $false
-# $buildLog = Get-ActionInput "build-log" $true
-
-$images   = "all"
-$options  = "clean public publish"
-$buildLog = "C:\Temp\build.log"
+$images   = Get-ActionInput "images"    $true
+$options  = Get-ActionInput "options"   $false
+$buildLog = Get-ActionInput "build-log" $true
 
 if ([System.String]::IsNullOrWhitespace($images))
 {
