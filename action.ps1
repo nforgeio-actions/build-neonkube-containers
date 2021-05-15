@@ -126,15 +126,6 @@ try
     Set-ActionOutput "build-commit-uri" "https://github.com/$env:GITHUB_REPOSITORY/commit/$buildCommit"
     Set-ActionOutput "build-issue-uri"  ""
 
-    # Fetch the current branch from git
-
-    Push-Location $nfRoot
-
-        $branch = $(& git branch --show-current).Trim()
-        ThrowOnExitCode
-
-    Pop-Location
-
     # Identify the target package registry organizations
 
     if ($branch.StartsWith("release-"))
