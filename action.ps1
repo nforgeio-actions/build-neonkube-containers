@@ -171,7 +171,7 @@ try
     $scriptPath = [System.IO.Path]::Combine($nfRoot, "Images", "publish.ps1")
 
     Write-ActionOutput "Building container images"
-    pwsh -File $scriptPath -NonInteractive $allOption $baseOption $otherOption $serviceOption $testOption $noPruneOption $noPushOption 2>&1 > $buildLog
+    pwsh -File $scriptPath -NonInteractive $allOption $baseOption $otherOption $serviceOption $testOption $noPruneOption $noPushOption *> $buildLog
     ThrowOnExitCode
 
     # Make all of the public images public when requested 
