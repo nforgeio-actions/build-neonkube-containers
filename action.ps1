@@ -176,6 +176,10 @@ try
 
     # Make all of the public images public when requested 
 
+    # $debug(jefflill): SetVisibility isn't working either:
+    #
+    #   https://github.com/nforgeio/neonCLOUD/issues/149
+
     if ($publish -and $public)
     {
         Write-ActionOutput "Making neonKUBE images public"
